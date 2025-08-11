@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import lombok.Getter;
+import mx.uam.ayd.proyecto.presentacion.checklist.ControlChecklist;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -99,4 +100,14 @@ public class VentanaPrincipal {
 			a.showAndWait();
 		});
 	}
+
+	@FXML
+	private void onChecklist() {
+		if (control != null) {
+			control.iniciaChecklistCompra();
+		} else {
+			mostrarError("No se pudo abrir el checklist (control no inicializado).");
+		}
+	}
+
 }

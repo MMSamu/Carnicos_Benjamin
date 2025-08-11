@@ -16,6 +16,12 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Seleccionar método de entrega"
                 onAction="#onSeleccionMetodoEntrega"/>
+
+        <Button text="Revisar pedido (checklist)"
+                onAction="#onChecklist"/>
+
     </HBox>
+
+
 
 </VBox>

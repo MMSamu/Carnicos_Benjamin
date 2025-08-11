@@ -3,7 +3,7 @@ package mx.uam.ayd.proyecto.presentacion.principal;
 import jakarta.annotation.PostConstruct;
 import mx.uam.ayd.proyecto.negocio.PedidoService;
 import mx.uam.ayd.proyecto.presentacion.seleccionMetodoEntrega.ControlMetodoEntrega;
-import mx.uam.ayd.proyecto.presentacion.seleccionMetodoEntrega.VistaMetodoEntrega;
+import mx.uam.ayd.proyecto.presentacion.seleccionMetodoEntrega.VentanaMetodoEntrega;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +56,7 @@ public class ControlPrincipal {
 
 		// 3) Crear controlador y vista del modal (HU-03)
 		ControlMetodoEntrega ctrl = new ControlMetodoEntrega();
-		VistaMetodoEntrega vista = new VistaMetodoEntrega(ctrl);
+		VentanaMetodoEntrega vista = new VentanaMetodoEntrega(ctrl);
 
 		try {
 			// 4) Mostrar modal y, si el usuario confirma, asignar método

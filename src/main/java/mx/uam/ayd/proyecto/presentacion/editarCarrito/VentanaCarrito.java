@@ -12,7 +12,7 @@ import java.util.List;
  * Compatible con la API actual del ControlCarrito.
  */
 
-public class VistaCarrito extends JFrame {
+public class VentanaCarrito extends JFrame {
 
     private final ControlCarrito control;
 
@@ -20,7 +20,7 @@ public class VistaCarrito extends JFrame {
     private final JTextField campoNota;
     private final JLabel etiquetaTotal;
 
-    public VistaCarrito(ControlCarrito control) {
+    public VentanaCarrito(ControlCarrito control) {
 
         this.control = control;
 

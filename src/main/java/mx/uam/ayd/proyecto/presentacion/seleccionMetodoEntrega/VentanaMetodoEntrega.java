@@ -16,12 +16,12 @@ import java.util.Optional;
  * muestra el diálogo y devuelve el método elegido.
  */
 
-public class VistaMetodoEntrega {
+public class VentanaMetodoEntrega {
 
     private final ControlMetodoEntrega control;
     private static final String FXML_PATH = "/fxml/ventana-seleccionar-entregas.fxml"; // resources/fxml
 
-    public VistaMetodoEntrega(ControlMetodoEntrega control) {
+    public VentanaMetodoEntrega(ControlMetodoEntrega control) {
         this.control = control;
     }
 

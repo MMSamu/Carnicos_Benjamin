@@ -3,6 +3,8 @@ package mx.uam.ayd.proyecto.datos;
 import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 /**
  * Repositorio para la entidad ProductoPedido.
  * Se utiliza para almacenar la relación entre productos y pedidos realizados.
@@ -11,4 +13,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ProductoPedidoRepository extends CrudRepository<ProductoPedido, Long> {
 
+
+
+    List<ProductoPedido> findByPedido_IdPedido(Long idPedido);
 }

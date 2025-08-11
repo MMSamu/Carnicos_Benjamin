@@ -1,7 +1,7 @@
 package mx.uam.ayd.proyecto.datos;
 
-import mx.uam.ayd.proyecto.negocio.modelo.Direccion;
 import org.springframework.data.repository.CrudRepository;
+import mx.uam.ayd.proyecto.negocio.modelo.Direccion;
 
 /**
  * Repositorio para la entidad Direccion.

@@ -1,7 +1,7 @@
 package mx.uam.ayd.proyecto.datos;
 
-import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
 import org.springframework.data.repository.CrudRepository;
+import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
 
 import java.util.List;
 
@@ -12,8 +12,5 @@ import java.util.List;
  */
 
 public interface ProductoPedidoRepository extends CrudRepository<ProductoPedido, Long> {
-
-
-
     List<ProductoPedido> findByPedido_IdPedido(Long idPedido);
 }

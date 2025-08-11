@@ -1,51 +1,55 @@
 package mx.uam.ayd.proyecto.presentacion.editarCarrito;
 
-import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
-
 import javax.swing.*;
 import java.awt.*;
-import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * UI sencilla para visualizar y editar el carrito.
- * Compatible con la API actual del ControlCarrito.
- */
+import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
 
 public class VentanaCarrito extends JFrame {
 
     private final ControlCarrito control;
-
     private final JTextArea areaProductos;
     private final JTextField campoNota;
     private final JLabel etiquetaTotal;
 
     public VentanaCarrito(ControlCarrito control) {
-
         this.control = control;
 
         setTitle("Carrito de Compras");
-        setSize(560, 440);
-        setLocationRelativeTo(null);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // Layout principal
-        JPanel root = new JPanel(new BorderLayout(10, 10));
-        root.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(root);
+        // Panel principal
+        JPanel panel = new JPanel(new BorderLayout());
 
-        // Centro: lista productos
-        areaProductos = new JTextArea(12, 48);
+        // Área para mostrar productos
+        areaProductos = new JTextArea(10, 40);
         areaProductos.setEditable(false);
-        areaProductos.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
-        root.add(new JScrollPane(areaProductos), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(areaProductos);
+        panel.add(scroll, BorderLayout.CENTER);
 
-        // Norte: total + botones
+        // Campo para nota
+        JPanel panelNota = new JPanel(new BorderLayout());
+        campoNota = new JTextField();
+        JButton btnGuardarNota = new JButton("Guardar Nota");
+        btnGuardarNota.addActionListener(e -> control.agregarNota(campoNota.getText()));
+        panelNota.add(new JLabel("Nota: "), BorderLayout.WEST);
+        panelNota.add(campoNota, BorderLayout.CENTER);
+        panelNota.add(btnGuardarNota, BorderLayout.EAST);
+        panel.add(panelNota, BorderLayout.SOUTH);
+
+        // Total
         etiquetaTotal = new JLabel("Total: $0.00");
-        etiquetaTotal.setFont(etiquetaTotal.getFont().deriveFont(Font.BOLD, 14f));
+        panel.add(etiquetaTotal, BorderLayout.NORTH);
+
+        // Botones de acción: Aumentar, Reducir, Eliminar
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout());
 
         JButton btnAumentar = new JButton("Aumentar");
-        btnAumentar.addActionListener(e -> modificarProductoCantidad(+1));
+        btnAumentar.addActionListener(e -> modificarProductoCantidad(1));
 
         JButton btnReducir = new JButton("Reducir");
         btnReducir.addActionListener(e -> modificarProductoCantidad(-1));
@@ -53,86 +57,49 @@ public class VentanaCarrito extends JFrame {
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(e -> eliminarProductoDelCarrito());
 
-        JPanel barraAcciones = new JPanel(new BorderLayout(10, 0));
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        botones.add(btnAumentar);
-        botones.add(btnReducir);
-        botones.add(btnEliminar);
-        barraAcciones.add(etiquetaTotal, BorderLayout.WEST);
-        barraAcciones.add(botones, BorderLayout.EAST);
+        panelBotones.add(btnAumentar);
+        panelBotones.add(btnReducir);
+        panelBotones.add(btnEliminar);
+        panel.add(panelBotones, BorderLayout.NORTH);
 
-        root.add(barraAcciones, BorderLayout.NORTH);
-
-        // Sur: nota
-        JPanel panelNota = new JPanel(new BorderLayout(8, 0));
-        panelNota.add(new JLabel("Nota: "), BorderLayout.WEST);
-
-        campoNota = new JTextField();
-        panelNota.add(campoNota, BorderLayout.CENTER);
-
-        JButton btnGuardarNota = new JButton("Guardar nota");
-        btnGuardarNota.addActionListener(e -> control.agregarNota(campoNota.getText()));
-        panelNota.add(btnGuardarNota, BorderLayout.EAST);
-
-        root.add(panelNota, BorderLayout.SOUTH);
-
-        // Cargar estado inicial
+        add(panel);
         mostrarProductos();
-        campoNota.setText(control.obtenerNota());
     }
 
-    /**
-     * Cambia el peso del primer producto del carrito (ejemplo simple sin selección).
-     * @param delta +1 aumenta 1kg, -1 reduce 1kg (ajusta según tu modelo).
-     */
-
-    private void modificarProductoCantidad(int delta) {
+    // Modificar la cantidad de un producto
+    private void modificarProductoCantidad(int cambio) {
+        // Aquí encontraríamos el producto en el carrito (por ejemplo, seleccionando el primero)
         List<ProductoPedido> productos = control.obtenerCarrito();
-        if (productos.isEmpty()) {
-            return;
+        if (!productos.isEmpty()) {
+            ProductoPedido producto = productos.get(0);  // Asumimos que es el primero para efectos de ejemplo
+            float nuevoPeso = producto.getPeso() + cambio;
+            if (control.actualizarPeso(producto, nuevoPeso)) {
+                mostrarProductos();
+            }
         }
-        ProductoPedido p = productos.get(0);
-
-        float nuevoPeso = p.getPeso() + delta;
-        if (nuevoPeso < 0f) nuevoPeso = 0f;
-
-        // La API del control devuelve boolean por compatibilidad; aquí solo refrescamos.
-        control.actualizarPeso(p, nuevoPeso);
-        mostrarProductos();
     }
 
-    /** Elimina el primer producto del carrito (ejemplo simple sin selección). */
-
+    // Eliminar un producto del carrito
     private void eliminarProductoDelCarrito() {
-
+        // Similar al ejemplo anterior, eliminamos el primero
         List<ProductoPedido> productos = control.obtenerCarrito();
-        if (productos.isEmpty()) {
-            return;
+        if (!productos.isEmpty()) {
+            ProductoPedido producto = productos.get(0);
+            control.eliminarProducto(producto);
+            mostrarProductos();
         }
-
-        ProductoPedido p = productos.get(0);
-        control.eliminarProducto(p);
-        mostrarProductos();
-
     }
-
-    /** Refresca la lista y el total. Maneja BigDecimal -> double para formateo. */
 
     public void mostrarProductos() {
-
         List<ProductoPedido> productos = control.obtenerCarrito();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder texto = new StringBuilder();
 
-        double total = 0.0;
         for (ProductoPedido p : productos) {
-            BigDecimal subtotal = p.getSubtotal();              // BigDecimal en el modelo
-            total += subtotal.doubleValue();
-
-            sb.append(String.format("• %s  —  %.2f kg  x  $%.2f  =  $%.2f%n",
-                    p.getNombre(), p.getPeso(), p.getPrecio(), subtotal.doubleValue()));
+            texto.append(String.format("• %s - %.2f kg x $%.2f = $%.2f\n",
+                    p.getNombre(), p.getPeso(), p.getPrecio(), p.calcularSubtotal()));
         }
 
-        areaProductos.setText(sb.toString());
-        etiquetaTotal.setText(String.format("Total: $%.2f", total));
+        areaProductos.setText(texto.toString());
+        etiquetaTotal.setText(String.format("Total: $%.2f", control.calcularTotal()));
     }
 }

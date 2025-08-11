@@ -1,100 +1,69 @@
-// src/main/java/mx/uam/ayd/proyecto/negocio/ProductoPedidoService.java
 package mx.uam.ayd.proyecto.negocio;
 
-import lombok.RequiredArgsConstructor;
-import mx.uam.ayd.proyecto.datos.ProductoPedidoRepository;
-import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import mx.uam.ayd.proyecto.datos.ProductoPedidoRepository;
+import mx.uam.ayd.proyecto.negocio.modelo.ProductoPedido;
+
 @Service
-@RequiredArgsConstructor
 public class ProductoPedidoService {
 
-    private final ProductoPedidoRepository productoPedidoRepository;
-
-    // Carrito en memoria (para UI/tests)
-
-    private final List<ProductoPedido> carrito = new ArrayList<>();
+    @Autowired
+    private ProductoPedidoRepository productoPedidoRepository;
 
     private String nota;
 
-    // Ctor sin args para tests que hacían new ProductoPedidoService()
-
-    public ProductoPedidoService() {
-
-        this.productoPedidoRepository = null; // modo memoria
-
-    }
-
-    // UI esperaba boolean
-
-
-    public boolean agregarProducto(ProductoPedido pp) {
-
-        if (pp == null) return false;
-
-        carrito.add(pp);
-
-        return true;
-
-    }
-
-
+    // Obtener productos en el carrito (desde la base)
     public List<ProductoPedido> obtenerProductosDelCarrito() {
-
-        return new ArrayList<>(carrito);
-
+        return (List<ProductoPedido>) productoPedidoRepository.findAll();
     }
 
-
-    public void eliminarProducto(ProductoPedido pp) {
-
-        carrito.remove(pp);
-
+    // Agregar producto y guardar en la base
+    public void agregarProducto(ProductoPedido producto) {
+        productoPedidoRepository.save(producto);
     }
 
+    // Eliminar producto del carrito y base
+    public void eliminarProducto(ProductoPedido producto) {
+        productoPedidoRepository.delete(producto);
+    }
 
-    public void actualizarPesoProducto(ProductoPedido pp, float nuevoPeso) {
-
-        if (pp != null) {
-
-            pp.setPeso(nuevoPeso);
-
+    // Actualizar peso de producto y guardar en base
+    public boolean actualizarPesoProducto(ProductoPedido producto, float nuevoPeso) {
+        if (nuevoPeso <= 0) {
+            return false;
         }
-
+        producto.setPeso(nuevoPeso);
+        productoPedidoRepository.save(producto);
+        return true;
     }
 
-
-    public BigDecimal calcularTotal() {
-
-        return carrito.stream()
-
-                .map(ProductoPedido::getSubtotal)
-
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+    // Calcular subtotal de un producto
+    public float calcularSubtotal(ProductoPedido producto) {
+        return producto.calcularSubtotal();
     }
 
-
-    public void agregarNota(String n) { this.nota = n; }
-
-    public String obtenerNota() { return this.nota; }
-
-    // --- Persistencia real (si/ cuando se requiera) ---
-
-    public void eliminarProductoPedido(Long id) {
-
-        if (productoPedidoRepository != null) {
-
-            productoPedidoRepository.deleteById(id);
-
+    // Calcular total del carrito
+    public float calcularTotal() {
+        float total = 0;
+        for (ProductoPedido p : obtenerProductosDelCarrito()) {
+            total += calcularSubtotal(p);
         }
+        return total;
+    }
 
+    // Agregar nota al pedido
+    public void agregarNota(String nota) {
+        if (nota.length() <= 200) {
+            this.nota = nota;
+        }
+    }
+
+    public String obtenerNota() {
+        return nota;
     }
 
 }
-

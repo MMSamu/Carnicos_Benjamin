@@ -25,6 +25,7 @@ public class ClienteService {
         cliente.setApellido(apellido);
         cliente.setTelefono(telefono);
         cliente.setEmail(""); // Puedes modificar esto según cómo captures el email
+        cliente.setMetodoPago(metodoPago);
 
         return clienteRepository.save(cliente);
     }

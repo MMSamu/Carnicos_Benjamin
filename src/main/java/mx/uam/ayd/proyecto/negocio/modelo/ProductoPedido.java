@@ -1,4 +1,3 @@
-// src/main/java/mx/uam/ayd/proyecto/negocio/modelo/ProductoPedido.java
 package mx.uam.ayd.proyecto.negocio.modelo;
 
 import jakarta.persistence.*;
@@ -18,7 +17,7 @@ public class ProductoPedido {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idProducto")
     private Producto producto;
-
+    private float precio;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPedido")
     private Pedido pedido;
@@ -79,5 +78,7 @@ public class ProductoPedido {
         return precioUnitario.multiply(BigDecimal.valueOf(Math.max(0, cantidad)));
 
     }
-
+    public float calcularSubtotal() {
+        return precio * peso;
+    }
 }

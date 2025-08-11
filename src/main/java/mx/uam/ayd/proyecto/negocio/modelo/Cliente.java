@@ -28,6 +28,7 @@ public class Cliente {
     private String apellido;
     private String telefono;
     private String email;
+    private String metodoPago; // Efectivo o tarjeta
 
     /**
      * Metodo para mostrar el nombre completo del cliente.

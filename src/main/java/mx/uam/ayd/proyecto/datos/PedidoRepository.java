@@ -34,4 +34,10 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long> {
     @Modifying
     @Query("UPDATE Pedido p SET p.estado = :nuevoEstado, p.timestampListoParaEntregar = :ts WHERE p.idPedido = :id")
     int actualizarAListoParaEntregar(long id, String nuevoEstado, LocalDateTime ts);
+    // Si tu entidad Pedido ya tiene campo "tipoEntrega"
+    List<Pedido> findByTipoEntregaContainingIgnoreCase(String tipoEntrega);
+
+    // Si tienes relación @ManyToOne Pedido.repartidor
+    // List<Pedido> findByRepartidor_IdRepartidor(Long idRepartidor);
+
 }
